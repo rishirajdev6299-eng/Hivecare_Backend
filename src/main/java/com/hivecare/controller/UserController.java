@@ -1,14 +1,9 @@
 package com.hivecare.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hivecare.model.User;
 import com.hivecare.repository.UserRepository;
@@ -24,12 +19,21 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
 
         if (userRepository.existsByEmail(user.getEmail())) {
+
             return ResponseEntity.badRequest()
                     .body("Email already exists");
+        }
+
+        // Normal registration
+        if (user.getRole() == null ||
+            user.getRole().isBlank()) {
+
+            user.setRole("USER");
         }
 
         userRepository.save(user);
@@ -37,14 +41,17 @@ public class UserController {
         return ResponseEntity.ok("Registration Successful");
     }
 
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(
+            @RequestBody User user) {
 
         User existingUser =
                 userRepository.findByEmail(user.getEmail());
 
         if (existingUser != null &&
-            existingUser.getPassword().equals(user.getPassword())) {
+            existingUser.getPassword()
+                    .equals(user.getPassword())) {
 
             return ResponseEntity.ok(existingUser);
         }
@@ -52,39 +59,36 @@ public class UserController {
         return ResponseEntity.badRequest()
                 .body("Invalid Email or Password");
     }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(
-            @PathVariable Long id,
-            @RequestBody User userDetails){
 
-        return userRepository.findById(id)
-                .map(user->{
 
-                    user.setName(userDetails.getName());
-
-                    user.setEmail(userDetails.getEmail());
-
-                    user.setPhone(userDetails.getPhone());
-
-                    user.setAddress(userDetails.getAddress());
-
-                    user.setPassword(userDetails.getPassword());
-
-                    User updatedUser=
-                            userRepository.save(user);
-
-                    return ResponseEntity.ok(updatedUser);
-
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(
-            @PathVariable Long id){
+            @PathVariable Long id) {
 
         return userRepository.findById(id)
                 .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable Long id,
+            @RequestBody User userDetails) {
+
+        return userRepository.findById(id)
+                .map(user -> {
+
+                    user.setName(userDetails.getName());
+                    user.setEmail(userDetails.getEmail());
+                    user.setPhone(userDetails.getPhone());
+                    user.setAddress(userDetails.getAddress());
+                    user.setPassword(userDetails.getPassword());
+
+                    return ResponseEntity.ok(
+                            userRepository.save(user)
+                    );
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }
