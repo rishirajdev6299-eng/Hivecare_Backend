@@ -20,6 +20,13 @@ public class Booking {
 
     private String course;
 
+    /*
+     * This field can still contain the old value if
+     * you already have existing data.
+     *
+     * For Razorpay payment, the important field is
+     * paymentTiming.
+     */
     private String paymentMethod;
 
     private Double amount;
@@ -27,14 +34,74 @@ public class Booking {
     private Long userId;
 
     private Long workerId;
+    
+    @Transient
+    private String workerName;
 
+    /*
+     * Booking status:
+     *
+     * PENDING
+     * ACCEPTED
+     * COMPLETED
+     */
     private String status;
 
+    /*
+     * Payment timing:
+     *
+     * PAY_NOW
+     * PAY_AFTER_SERVICE
+     */
+    private String paymentTiming;
+
+    /*
+     * Payment status:
+     *
+     * PENDING
+     * PAID
+     */
+    private String paymentStatus;
+
+    /*
+     * Razorpay order created by backend.
+     */
+    private String razorpayOrderId;
+
+    /*
+     * Razorpay payment ID returned after
+     * successful payment.
+     */
+    private String razorpayPaymentId;
+
+    /*
+     * Razorpay signature used for verification.
+     */
+    private String razorpaySignature;
+
+    /*
+     * Payment completion date/time.
+     */
+    private String paidAt;
+
+    /*
+     * Service completion date/time.
+     */
+    private String completedAt;
+
+
+    // =========================
+    // ID
+    // =========================
 
     public Long getId() {
         return id;
     }
 
+
+    // =========================
+    // SERVICE
+    // =========================
 
     public String getService() {
         return service;
@@ -45,6 +112,10 @@ public class Booking {
     }
 
 
+    // =========================
+    // CUSTOMER NAME
+    // =========================
+
     public String getName() {
         return name;
     }
@@ -53,6 +124,10 @@ public class Booking {
         this.name = name;
     }
 
+
+    // =========================
+    // ADDRESS
+    // =========================
 
     public String getAddress() {
         return address;
@@ -63,6 +138,10 @@ public class Booking {
     }
 
 
+    // =========================
+    // DATE
+    // =========================
+
     public String getDate() {
         return date;
     }
@@ -71,6 +150,10 @@ public class Booking {
         this.date = date;
     }
 
+
+    // =========================
+    // COURSE
+    // =========================
 
     public String getCourse() {
         return course;
@@ -81,6 +164,10 @@ public class Booking {
     }
 
 
+    // =========================
+    // PAYMENT METHOD
+    // =========================
+
     public String getPaymentMethod() {
         return paymentMethod;
     }
@@ -89,6 +176,10 @@ public class Booking {
         this.paymentMethod = paymentMethod;
     }
 
+
+    // =========================
+    // AMOUNT
+    // =========================
 
     public Double getAmount() {
         return amount;
@@ -99,6 +190,10 @@ public class Booking {
     }
 
 
+    // =========================
+    // USER ID
+    // =========================
+
     public Long getUserId() {
         return userId;
     }
@@ -107,6 +202,10 @@ public class Booking {
         this.userId = userId;
     }
 
+
+    // =========================
+    // WORKER ID
+    // =========================
 
     public Long getWorkerId() {
         return workerId;
@@ -117,6 +216,10 @@ public class Booking {
     }
 
 
+    // =========================
+    // BOOKING STATUS
+    // =========================
+
     public String getStatus() {
         return status;
     }
@@ -124,4 +227,105 @@ public class Booking {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
+    // =========================
+    // PAYMENT TIMING
+    // =========================
+
+    public String getPaymentTiming() {
+        return paymentTiming;
+    }
+
+    public void setPaymentTiming(String paymentTiming) {
+        this.paymentTiming = paymentTiming;
+    }
+
+
+    // =========================
+    // PAYMENT STATUS
+    // =========================
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+
+    // =========================
+    // RAZORPAY ORDER ID
+    // =========================
+
+    public String getRazorpayOrderId() {
+        return razorpayOrderId;
+    }
+
+    public void setRazorpayOrderId(String razorpayOrderId) {
+        this.razorpayOrderId = razorpayOrderId;
+    }
+
+
+    // =========================
+    // RAZORPAY PAYMENT ID
+    // =========================
+
+    public String getRazorpayPaymentId() {
+        return razorpayPaymentId;
+    }
+
+    public void setRazorpayPaymentId(String razorpayPaymentId) {
+        this.razorpayPaymentId = razorpayPaymentId;
+    }
+
+
+    // =========================
+    // RAZORPAY SIGNATURE
+    // =========================
+
+    public String getRazorpaySignature() {
+        return razorpaySignature;
+    }
+
+    public void setRazorpaySignature(String razorpaySignature) {
+        this.razorpaySignature = razorpaySignature;
+    }
+
+
+    // =========================
+    // PAID AT
+    // =========================
+
+    public String getPaidAt() {
+        return paidAt;
+    }
+
+    public void setPaidAt(String paidAt) {
+        this.paidAt = paidAt;
+    }
+
+
+    // =========================
+    // COMPLETED AT
+    // =========================
+
+    public String getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(String completedAt) {
+        this.completedAt = completedAt;
+    }
+
+
+	public String getWorkerName() {
+		return workerName;
+	}
+
+
+	public void setWorkerName(String workerName) {
+		this.workerName = workerName;
+	}
 }

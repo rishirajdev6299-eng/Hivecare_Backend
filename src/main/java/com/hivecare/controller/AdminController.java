@@ -1,5 +1,7 @@
 package com.hivecare.controller;
+import java.util.stream.Collectors;
 
+import com.hivecare.dto.AdminBookingResponse;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
@@ -50,9 +52,118 @@ public class AdminController {
 
     // ALL BOOKINGS
     @GetMapping("/bookings")
-    public List<Booking> getBookings() {
+    public List<AdminBookingResponse> getBookings() {
 
-        return bookingRepository.findAll();
+        List<Booking> bookings =
+                bookingRepository.findAll();
+
+        return bookings.stream()
+                .map(booking -> {
+
+                    AdminBookingResponse response =
+                            new AdminBookingResponse();
+
+                    response.setId(
+                            booking.getId()
+                    );
+
+                    response.setService(
+                            booking.getService()
+                    );
+
+                    response.setName(
+                            booking.getName()
+                    );
+
+                    response.setAddress(
+                            booking.getAddress()
+                    );
+
+                    response.setDate(
+                            booking.getDate()
+                    );
+
+                    response.setCourse(
+                            booking.getCourse()
+                    );
+
+                    response.setAmount(
+                            booking.getAmount()
+                    );
+
+                    response.setUserId(
+                            booking.getUserId()
+                    );
+
+                    response.setWorkerId(
+                            booking.getWorkerId()
+                    );
+
+
+                    /*
+                     * Get worker name.
+                     */
+                    if (booking.getWorkerId() != null) {
+
+                        User worker =
+                                userRepository
+                                        .findById(
+                                            booking.getWorkerId()
+                                        )
+                                        .orElse(null);
+
+                        if (worker != null) {
+
+                            response.setWorkerName(
+                                    worker.getName()
+                            );
+
+                        } else {
+
+                            response.setWorkerName(
+                                    "Unknown Worker"
+                            );
+                        }
+
+                    } else {
+
+                        response.setWorkerName(
+                                "Not Assigned"
+                        );
+                    }
+
+
+                    response.setStatus(
+                            booking.getStatus()
+                    );
+
+                    response.setPaymentTiming(
+                            booking.getPaymentTiming()
+                    );
+
+                    response.setPaymentStatus(
+                            booking.getPaymentStatus()
+                    );
+
+                    response.setRazorpayPaymentId(
+                            booking.getRazorpayPaymentId()
+                    );
+
+                    response.setPaidAt(
+                            booking.getPaidAt()
+                    );
+
+                    response.setCompletedAt(
+                            booking.getCompletedAt()
+                    );
+
+
+                    return response;
+
+                })
+                .collect(
+                    Collectors.toList()
+                );
     }
 
 

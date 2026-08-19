@@ -161,4 +161,82 @@ public class WorkerController {
         return bookingRepository
                 .findByWorkerId(workerId);
     }
+ // =====================================================
+ // COMPLETE SERVICE
+ // =====================================================
+
+ @PutMapping("/{workerId}/bookings/{bookingId}/complete")
+ public ResponseEntity<?> completeService(
+         @PathVariable Long workerId,
+         @PathVariable Long bookingId) {
+
+     User worker =
+             userRepository.findById(workerId)
+                     .orElse(null);
+
+     if (worker == null ||
+         !"WORKER".equalsIgnoreCase(worker.getRole())) {
+
+         return ResponseEntity.badRequest()
+                 .body("Invalid worker");
+     }
+
+
+     Booking booking =
+             bookingRepository.findById(bookingId)
+                     .orElse(null);
+
+     if (booking == null) {
+
+         return ResponseEntity.notFound().build();
+     }
+
+
+     /*
+      * Make sure this worker is actually assigned
+      * to this booking.
+      */
+     if (booking.getWorkerId() == null ||
+         !booking.getWorkerId().equals(workerId)) {
+
+         return ResponseEntity.badRequest()
+                 .body(
+                     "This booking is not assigned to this worker"
+                 );
+     }
+
+
+     /*
+      * Only ACCEPTED bookings can be completed.
+      */
+     if (!"ACCEPTED".equalsIgnoreCase(
+             booking.getStatus())) {
+
+         return ResponseEntity.badRequest()
+                 .body(
+                     "Only accepted bookings can be completed"
+                 );
+     }
+
+
+     /*
+      * Mark service as completed.
+      */
+     booking.setStatus("COMPLETED");
+
+
+     /*
+      * Save completion time.
+      */
+     booking.setCompletedAt(
+             java.time.LocalDateTime
+                     .now()
+                     .toString()
+     );
+
+
+     return ResponseEntity.ok(
+             bookingRepository.save(booking)
+     );
+ }
 }
